@@ -34,10 +34,49 @@ struct OCRExport {
     let jsonData: Data
 }
 
+struct OCRFileNames {
+    let text: String
+    let json: String
+}
+
 struct OCRCandidate {
     let text: String
     let confidence: Float
     let boundingBox: CGRect
+}
+
+func ocrFileNames(timestamp: String) -> OCRFileNames {
+    OCRFileNames(
+        text: "scan_\(timestamp)_ocr.txt",
+        json: "scan_\(timestamp)_ocr.json"
+    )
+}
+
+@discardableResult
+func writeOCRFileGroup(
+    _ export: OCRExport,
+    timestamp: String,
+    to directory: URL
+) throws -> [URL] {
+    let names = ocrFileNames(timestamp: timestamp)
+    let files = [
+        (name: names.text, data: export.textData),
+        (name: names.json, data: export.jsonData),
+    ]
+    var writtenURLs: [URL] = []
+    do {
+        for file in files {
+            let destination = directory.appendingPathComponent(file.name)
+            try writeAtomicallyWithoutOverwriting(file.data, to: destination)
+            writtenURLs.append(destination)
+        }
+        return writtenURLs
+    } catch {
+        for url in writtenURLs {
+            try? FileManager.default.removeItem(at: url)
+        }
+        throw error
+    }
 }
 
 func preferredOCRLanguages(supported: [String]) throws -> [String] {

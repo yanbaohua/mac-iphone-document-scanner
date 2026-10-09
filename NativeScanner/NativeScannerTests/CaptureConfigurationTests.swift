@@ -35,4 +35,63 @@ final class CaptureConfigurationTests: XCTestCase {
         XCTAssertEqual(names[.color], "scan_20261009_101112_123456_color.png")
         XCTAssertEqual(names[.gray], "scan_20261009_101112_123456_gray.png")
     }
+
+    func testOCRFileNamesShareScanTimestamp() {
+        let names = ocrFileNames(timestamp: "20261009_101112_123456")
+
+        XCTAssertEqual(names.text, "scan_20261009_101112_123456_ocr.txt")
+        XCTAssertEqual(names.json, "scan_20261009_101112_123456_ocr.json")
+    }
+
+    func testOCRFileGroupWritesTextAndJSON() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        addTeardownBlock { try? FileManager.default.removeItem(at: directory) }
+
+        let timestamp = "20261009_101112_123456"
+        let names = ocrFileNames(timestamp: timestamp)
+        let export = try makeOCRExport(
+            sourceImage: "scan_\(timestamp)_original.png",
+            imageWidth: 800,
+            imageHeight: 600,
+            languages: ["zh-Hans", "en-US"],
+            candidates: []
+        )
+
+        let written = try writeOCRFileGroup(export, timestamp: timestamp, to: directory)
+
+        XCTAssertEqual(Set(written.map(\.lastPathComponent)), Set([names.text, names.json]))
+        XCTAssertEqual(try Data(contentsOf: directory.appendingPathComponent(names.text)), export.textData)
+        XCTAssertEqual(try Data(contentsOf: directory.appendingPathComponent(names.json)), export.jsonData)
+    }
+
+    func testOCRWriteFailureCleansNewOCRFilesAndPreservesImages() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        addTeardownBlock { try? FileManager.default.removeItem(at: directory) }
+
+        let timestamp = "20261009_101112_123456"
+        let imageURL = directory.appendingPathComponent("scan_\(timestamp)_original.png")
+        let names = ocrFileNames(timestamp: timestamp)
+        let textURL = directory.appendingPathComponent(names.text)
+        let jsonURL = directory.appendingPathComponent(names.json)
+        try Data("image".utf8).write(to: imageURL)
+        try Data("existing-json".utf8).write(to: jsonURL)
+        let export = try makeOCRExport(
+            sourceImage: imageURL.lastPathComponent,
+            imageWidth: 800,
+            imageHeight: 600,
+            languages: ["zh-Hans", "en-US"],
+            candidates: []
+        )
+
+        XCTAssertThrowsError(
+            try writeOCRFileGroup(export, timestamp: timestamp, to: directory)
+        )
+        XCTAssertFalse(FileManager.default.fileExists(atPath: textURL.path))
+        XCTAssertEqual(try Data(contentsOf: jsonURL), Data("existing-json".utf8))
+        XCTAssertEqual(try Data(contentsOf: imageURL), Data("image".utf8))
+    }
 }

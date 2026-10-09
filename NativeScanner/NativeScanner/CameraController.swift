@@ -60,6 +60,7 @@ final class CameraController: NSObject, ObservableObject, @unchecked Sendable {
     private let processingQueue = DispatchQueue(label: "com.yanbaohua.NativeScanner.processing", qos: .userInitiated)
     private let frameContext = CIContext()
     private let processor = DocumentProcessor()
+    private let ocrProcessor = OCRProcessor()
     private var candidates = RecentBestBuffer<FrameCandidate>(capacity: 8)
     private var lastAnalysisTime = 0.0
     private var lastDetectionTime = 0.0
@@ -225,10 +226,31 @@ final class CameraController: NSObject, ObservableObject, @unchecked Sendable {
                 writtenURLs.append(destination)
             }
 
-            publish(
-                status: "扫描完成：\(document.width)×\(document.height)，已保存到 \(directory.path)",
-                processing: false
-            )
+            do {
+                guard let originalName = names[.original],
+                      let originalData = document.pngData[.original] else {
+                    throw ScannerError.missingProcessedVariant(DocumentVariant.original.rawValue)
+                }
+                let export = try ocrProcessor.recognize(
+                    pngData: originalData,
+                    sourceImage: originalName
+                )
+                try writeOCRFileGroup(export, timestamp: timestamp, to: directory)
+                let ocrStatus = export.document.observations.isEmpty
+                    ? "未识别到文字"
+                    : "OCR 识别 \(export.document.observations.count) 条"
+                publish(
+                    status: "扫描完成：\(document.width)×\(document.height)，\(ocrStatus)，已保存到 \(directory.path)",
+                    processing: false
+                )
+            } catch {
+                let message = (error as? LocalizedError)?.errorDescription
+                    ?? error.localizedDescription
+                publish(
+                    status: "图像已保存：\(document.width)×\(document.height)，但 OCR 失败：\(message)",
+                    processing: false
+                )
+            }
         } catch {
             for url in writtenURLs {
                 try? FileManager.default.removeItem(at: url)

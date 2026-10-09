@@ -117,14 +117,14 @@
 **Acceptance criteria:**
 
 - [ ] 一次正常扫描生成同时间戳的三份 PNG、TXT 和 JSON，状态显示真实图像尺寸和 OCR 条目数量；无文字时显示非错误提示。
-- [ ] OCR 识别或任一 OCR 文件写入失败时，只清理本次 TXT/JSON，三份 PNG 保留且应用结束处理中状态。
-- [ ] 五份文件均使用现有原子且不覆盖的安全写入方式；应用不记录或显示整份 OCR 正文。
+- [x] OCR 识别或任一 OCR 文件写入失败时，只清理本次 TXT/JSON，三份 PNG 保留且应用结束处理中状态。
+- [x] 五份文件均使用现有原子且不覆盖的安全写入方式；应用不记录或显示整份 OCR 正文。
 
 **Verification:**
 
-- [ ] Focused tests pass:
+- [x] Focused tests pass:
   `xcodebuild -project NativeScanner/NativeScanner.xcodeproj -scheme NativeScanner -configuration Debug -destination 'platform=macOS' -derivedDataPath NativeScanner/build test -only-testing:NativeScannerTests/OCRProcessorTests -only-testing:NativeScannerTests/CaptureConfigurationTests`
-- [ ] Full XCTest passes:
+- [x] Full XCTest passes:
   `xcodebuild -project NativeScanner/NativeScanner.xcodeproj -scheme NativeScanner -configuration Debug -destination 'platform=macOS' -derivedDataPath NativeScanner/build test`
 - [ ] Manual check: 正常样张和空白页均能完成扫描；文件冲突的失败隔离由可控路径的自动测试验证。
 
