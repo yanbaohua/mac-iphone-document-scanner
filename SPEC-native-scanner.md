@@ -27,7 +27,7 @@
 - 语言：Swift 6.2.4，严格并发检查。
 - UI：SwiftUI；`NSViewRepresentable` 承载 `AVCaptureVideoPreviewLayer`，`NSOpenPanel` 选择目录。
 - 采集：AVFoundation，使用 `.continuityCamera`、`AVCaptureVideoDataOutput` 和预览层。
-- 检测：Vision `VNDetectRectanglesRequest`。
+- 检测：Vision `VNDetectDocumentSegmentationRequest`，通用矩形检测作为回退。
 - 处理：Core Image 透视校正、光照/对比度调整和保守锐化。
 - 保存：ImageIO 编码 PNG；写入用户选择的安全作用域目录。
 - 测试：XCTest。

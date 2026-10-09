@@ -6,65 +6,85 @@ struct ContentView: View {
     @State private var outputDirectory: URL?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(spacing: 14) {
+            PreviewView(
+                session: camera.captureSession,
+                quadrilateral: camera.documentQuadrilateral
+            )
+            .background(Color.black)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .overlay(alignment: .topLeading) {
+                Text("实时画面 \(camera.previewSize)")
+                    .font(.caption.monospacedDigit())
+                    .padding(7)
+                    .background(.black.opacity(0.65), in: RoundedRectangle(cornerRadius: 6))
+                    .foregroundStyle(.white)
+                    .padding(10)
+            }
+            .frame(minHeight: 480)
+
             HStack(spacing: 12) {
-                Image(systemName: "camera.viewfinder")
-                    .font(.system(size: 36))
-                    .foregroundStyle(camera.isReady ? .green : .secondary)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("原生高清照片探针")
-                        .font(.title2.bold())
-                    Text("仅使用 iPhone 连续互通相机，不回退到 Mac 内置摄像头。")
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            GroupBox("当前状态") {
+                Circle()
+                    .fill(camera.hasDocumentCandidate ? Color.green : Color.orange)
+                    .frame(width: 10, height: 10)
                 Text(camera.statusMessage)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .lineLimit(2)
                     .textSelection(.enabled)
-                    .padding(.vertical, 4)
+                Spacer()
             }
 
-            HStack {
-                Button("连接 iPhone 相机") {
-                    camera.start()
-                }
-
+            HStack(spacing: 12) {
                 Button("选择保存目录") {
                     selectOutputDirectory()
                 }
 
-                Button(camera.isCapturing ? "拍摄中…" : "拍摄一张原始照片") {
-                    guard let outputDirectory else { return }
-                    camera.capture(to: outputDirectory)
+                Text(outputDirectory?.path ?? "尚未选择保存目录")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                    .textSelection(.enabled)
+
+                Spacer()
+
+                Button(camera.isProcessing ? "处理中…" : "扫描") {
+                    scan()
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(!camera.isReady || camera.isCapturing || outputDirectory == nil)
-            }
+                .keyboardShortcut("s", modifiers: [])
+                .disabled(!canScan)
 
-            Text("保存目录：\(outputDirectory?.path ?? "未选择")")
-                .font(.callout)
-                .foregroundStyle(.secondary)
-                .textSelection(.enabled)
-
-            GroupBox("设备与照片日志（设备标识仅显示在本次运行）") {
-                ScrollView {
-                    Text(camera.logLines.isEmpty ? "连接后将显示设备、支持尺寸、请求值与实际输出。" : camera.logLines.joined(separator: "\n"))
-                        .font(.system(.callout, design: .monospaced))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .textSelection(.enabled)
+                Button("使用空格扫描") {
+                    scan()
                 }
-                .frame(minHeight: 180)
+                .keyboardShortcut(.space, modifiers: [])
+                .frame(width: 0, height: 0)
+                .opacity(0)
+                .accessibilityHidden(true)
+                .disabled(!canScan)
             }
         }
-        .padding(24)
-        .frame(minWidth: 760, minHeight: 520)
+        .padding(18)
+        .frame(minWidth: 920, minHeight: 680)
+        .onAppear { camera.start() }
+        .onDisappear { camera.stop() }
+    }
+
+    private var canScan: Bool {
+        camera.isReady &&
+            camera.hasDocumentCandidate &&
+            !camera.isProcessing &&
+            outputDirectory != nil
+    }
+
+    private func scan() {
+        guard let outputDirectory else { return }
+        camera.scan(to: outputDirectory)
     }
 
     private func selectOutputDirectory() {
         let panel = NSOpenPanel()
-        panel.title = "选择原始高清照片的保存目录"
+        panel.title = "选择扫描文件保存目录"
         panel.prompt = "选择目录"
         panel.canChooseFiles = false
         panel.canChooseDirectories = true

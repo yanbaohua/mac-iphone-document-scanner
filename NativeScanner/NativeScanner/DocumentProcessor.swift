@@ -18,6 +18,12 @@ enum DocumentVariant: String, CaseIterable {
     case gray
 }
 
+func scanFileNames(timestamp: String) -> [DocumentVariant: String] {
+    Dictionary(uniqueKeysWithValues: DocumentVariant.allCases.map { variant in
+        (variant, "scan_\(timestamp)_\(variant.rawValue).png")
+    })
+}
+
 struct ProcessedDocument {
     let width: Int
     let height: Int
@@ -28,16 +34,32 @@ final class DocumentProcessor: @unchecked Sendable {
     private let context = CIContext()
 
     func detectQuadrilateral(in image: CGImage) throws -> DocumentQuadrilateral? {
+        let documentRequest = VNDetectDocumentSegmentationRequest()
+        let documentHandler = VNImageRequestHandler(cgImage: image, orientation: .up)
+        try documentHandler.perform([documentRequest])
+        if let observation = documentRequest.results?.first {
+            let quadrilateral = Self.quadrilateral(from: observation)
+            if isUsableDocumentQuadrilateral(quadrilateral) {
+                return quadrilateral
+            }
+        }
+
         let request = VNDetectRectanglesRequest()
-        request.maximumObservations = 1
-        request.minimumConfidence = 0.65
+        request.maximumObservations = 3
+        request.minimumConfidence = 0.40
         request.minimumAspectRatio = 0.25
-        request.quadratureTolerance = 25
+        request.minimumSize = 0.15
+        request.quadratureTolerance = 35
 
         let handler = VNImageRequestHandler(cgImage: image, orientation: .up)
         try handler.perform([request])
-        guard let observation = request.results?.first else { return nil }
-        return DocumentQuadrilateral(
+        return request.results?
+            .map(Self.quadrilateral)
+            .first(where: isUsableDocumentQuadrilateral)
+    }
+
+    private static func quadrilateral(from observation: VNRectangleObservation) -> DocumentQuadrilateral {
+        DocumentQuadrilateral(
             topLeft: observation.topLeft,
             topRight: observation.topRight,
             bottomRight: observation.bottomRight,
@@ -166,6 +188,22 @@ final class DocumentProcessor: @unchecked Sendable {
         }
         return data as Data
     }
+}
+
+func isUsableDocumentQuadrilateral(_ quadrilateral: DocumentQuadrilateral) -> Bool {
+    let points = [
+        quadrilateral.topLeft,
+        quadrilateral.topRight,
+        quadrilateral.bottomRight,
+        quadrilateral.bottomLeft,
+    ]
+    var twiceArea = CGFloat.zero
+    for index in points.indices {
+        let next = points[(index + 1) % points.count]
+        twiceArea += points[index].x * next.y - next.x * points[index].y
+    }
+    // shortcut: 文档需占画面至少 20%，若要支持远距离小票再联合边缘质量判定。
+    return abs(twiceArea) / 2 >= 0.20
 }
 
 enum DocumentProcessingError: LocalizedError {

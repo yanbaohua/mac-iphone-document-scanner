@@ -87,6 +87,39 @@ final class DocumentProcessorTests: XCTestCase {
         XCTAssertNotNil(quadrilateral)
     }
 
+    func testDocumentCandidateRejectsSmallRectangularObjects() {
+        let smallObject = DocumentQuadrilateral(
+            topLeft: CGPoint(x: 0.10, y: 0.30),
+            topRight: CGPoint(x: 0.30, y: 0.30),
+            bottomRight: CGPoint(x: 0.30, y: 0.10),
+            bottomLeft: CGPoint(x: 0.10, y: 0.10)
+        )
+
+        XCTAssertFalse(isUsableDocumentQuadrilateral(smallObject))
+    }
+
+    func testDocumentCandidateAcceptsPageFillingFrame() {
+        let page = DocumentQuadrilateral(
+            topLeft: CGPoint(x: 0.10, y: 0.90),
+            topRight: CGPoint(x: 0.90, y: 0.90),
+            bottomRight: CGPoint(x: 0.90, y: 0.10),
+            bottomLeft: CGPoint(x: 0.10, y: 0.10)
+        )
+
+        XCTAssertTrue(isUsableDocumentQuadrilateral(page))
+    }
+
+    func testFullHDDocumentDetectionCompletesWithinPreviewBudget() throws {
+        let image = try makeDocumentImage(width: 1_920, height: 1_080)
+        let start = CFAbsoluteTimeGetCurrent()
+
+        let quadrilateral = try DocumentProcessor().detectQuadrilateral(in: image)
+
+        let elapsed = CFAbsoluteTimeGetCurrent() - start
+        XCTAssertNotNil(quadrilateral)
+        XCTAssertLessThan(elapsed, 0.50, "1080p 文档检测耗时 \(elapsed) 秒")
+    }
+
     private func makeTestImage(width: Int, height: Int) throws -> CGImage {
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         guard let context = CGContext(
@@ -126,7 +159,14 @@ final class DocumentProcessorTests: XCTestCase {
         context.setFillColor(CGColor(gray: 0.05, alpha: 1))
         context.fill(CGRect(x: 0, y: 0, width: width, height: height))
         context.setFillColor(CGColor(gray: 1, alpha: 1))
-        context.fill(CGRect(x: 50, y: 40, width: 300, height: 220))
+        context.fill(
+            CGRect(
+                x: CGFloat(width) * 0.125,
+                y: CGFloat(height) * 0.133,
+                width: CGFloat(width) * 0.75,
+                height: CGFloat(height) * 0.733
+            )
+        )
         guard let image = context.makeImage() else {
             throw TestImageError.imageCreationFailed
         }

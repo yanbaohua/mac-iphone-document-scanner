@@ -6,6 +6,6 @@ struct NativeScannerApp: App {
         WindowGroup {
             ContentView()
         }
-        .defaultSize(width: 760, height: 520)
+        .defaultSize(width: 920, height: 680)
     }
 }
