@@ -12,6 +12,8 @@
 		A10000000000000000000003 /* NativeScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* NativeScannerTests.swift */; };
 		A10000000000000000000004 /* CaptureConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* CaptureConfigurationTests.swift */; };
 		A10000000000000000000005 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* CameraController.swift */; };
+		A10000000000000000000006 /* DocumentProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* DocumentProcessorTests.swift */; };
+		A10000000000000000000007 /* DocumentProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* DocumentProcessor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		A20000000000000000000007 /* NativeScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeScannerTests.swift; sourceTree = "<group>"; };
 		A20000000000000000000008 /* CaptureConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureConfigurationTests.swift; sourceTree = "<group>"; };
 		A20000000000000000000009 /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		A2000000000000000000000A /* DocumentProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentProcessorTests.swift; sourceTree = "<group>"; };
+		A2000000000000000000000B /* DocumentProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentProcessor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +63,7 @@
 				A20000000000000000000001 /* NativeScannerApp.swift */,
 				A20000000000000000000002 /* ContentView.swift */,
 				A20000000000000000000009 /* CameraController.swift */,
+				A2000000000000000000000B /* DocumentProcessor.swift */,
 				A20000000000000000000003 /* Info.plist */,
 				A20000000000000000000004 /* NativeScanner.entitlements */,
 			);
@@ -70,6 +75,7 @@
 			children = (
 				A20000000000000000000007 /* NativeScannerTests.swift */,
 				A20000000000000000000008 /* CaptureConfigurationTests.swift */,
+				A2000000000000000000000A /* DocumentProcessorTests.swift */,
 			);
 			path = NativeScannerTests;
 			sourceTree = "<group>";
@@ -185,6 +191,7 @@
 				A10000000000000000000001 /* NativeScannerApp.swift in Sources */,
 				A10000000000000000000002 /* ContentView.swift in Sources */,
 				A10000000000000000000005 /* CameraController.swift in Sources */,
+				A10000000000000000000007 /* DocumentProcessor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +201,7 @@
 			files = (
 				A10000000000000000000003 /* NativeScannerTests.swift in Sources */,
 				A10000000000000000000004 /* CaptureConfigurationTests.swift in Sources */,
+				A10000000000000000000006 /* DocumentProcessorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
