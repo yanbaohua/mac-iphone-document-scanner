@@ -2,6 +2,21 @@ import XCTest
 @testable import NativeScanner
 
 final class CaptureConfigurationTests: XCTestCase {
+    func testAtomicWritePreservesExistingDestination() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        addTeardownBlock { try? FileManager.default.removeItem(at: directory) }
+        let destination = directory.appendingPathComponent("scan.png")
+
+        try writeAtomicallyWithoutOverwriting(Data("first".utf8), to: destination)
+
+        XCTAssertThrowsError(
+            try writeAtomicallyWithoutOverwriting(Data("second".utf8), to: destination)
+        )
+        XCTAssertEqual(try Data(contentsOf: destination), Data("first".utf8))
+    }
+
     func testRecentBestBufferKeepsOnlyNewestCandidatesAndSelectsHighestScore() {
         var buffer = RecentBestBuffer<String>(capacity: 3)
         buffer.append("old-best", score: 100)

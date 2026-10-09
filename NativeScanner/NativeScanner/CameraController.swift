@@ -31,6 +31,19 @@ struct RecentBestBuffer<Value> {
     }
 }
 
+func writeAtomicallyWithoutOverwriting(_ data: Data, to destination: URL) throws {
+    let temporary = destination.deletingLastPathComponent().appendingPathComponent(
+        ".\(destination.lastPathComponent).\(UUID().uuidString).tmp"
+    )
+    do {
+        try data.write(to: temporary, options: .atomic)
+        try FileManager.default.moveItem(at: temporary, to: destination)
+    } catch {
+        try? FileManager.default.removeItem(at: temporary)
+        throw error
+    }
+}
+
 final class CameraController: NSObject, ObservableObject, @unchecked Sendable {
     @Published private(set) var statusMessage = "尚未连接 iPhone 连续互通相机。"
     @Published private(set) var isReady = false
@@ -208,7 +221,7 @@ final class CameraController: NSObject, ObservableObject, @unchecked Sendable {
                     throw ScannerError.missingProcessedVariant(variant.rawValue)
                 }
                 let destination = directory.appendingPathComponent(name)
-                try data.write(to: destination, options: [.atomic, .withoutOverwriting])
+                try writeAtomicallyWithoutOverwriting(data, to: destination)
                 writtenURLs.append(destination)
             }
 
