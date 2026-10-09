@@ -3,4 +3,6 @@ __pycache__/
 *.py[cod]
 .venv/
 scanned_docs/
-tasks/
+NativeScanner/build/
+xcuserdata/
+*.xcuserstate
