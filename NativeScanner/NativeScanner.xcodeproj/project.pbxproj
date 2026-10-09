@@ -15,6 +15,8 @@
 		A10000000000000000000006 /* DocumentProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* DocumentProcessorTests.swift */; };
 		A10000000000000000000007 /* DocumentProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* DocumentProcessor.swift */; };
 		A10000000000000000000008 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* PreviewView.swift */; };
+		A10000000000000000000009 /* OCRProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* OCRProcessorTests.swift */; };
+		A1000000000000000000000A /* OCRProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* OCRProcessor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 		A2000000000000000000000A /* DocumentProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentProcessorTests.swift; sourceTree = "<group>"; };
 		A2000000000000000000000B /* DocumentProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentProcessor.swift; sourceTree = "<group>"; };
 		A2000000000000000000000C /* PreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
+		A2000000000000000000000D /* OCRProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRProcessorTests.swift; sourceTree = "<group>"; };
+		A2000000000000000000000E /* OCRProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRProcessor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +70,7 @@
 				A20000000000000000000002 /* ContentView.swift */,
 				A20000000000000000000009 /* CameraController.swift */,
 				A2000000000000000000000B /* DocumentProcessor.swift */,
+				A2000000000000000000000E /* OCRProcessor.swift */,
 				A2000000000000000000000C /* PreviewView.swift */,
 				A20000000000000000000003 /* Info.plist */,
 				A20000000000000000000004 /* NativeScanner.entitlements */,
@@ -79,6 +84,7 @@
 				A20000000000000000000007 /* NativeScannerTests.swift */,
 				A20000000000000000000008 /* CaptureConfigurationTests.swift */,
 				A2000000000000000000000A /* DocumentProcessorTests.swift */,
+				A2000000000000000000000D /* OCRProcessorTests.swift */,
 			);
 			path = NativeScannerTests;
 			sourceTree = "<group>";
@@ -195,6 +201,7 @@
 				A10000000000000000000002 /* ContentView.swift in Sources */,
 				A10000000000000000000005 /* CameraController.swift in Sources */,
 				A10000000000000000000007 /* DocumentProcessor.swift in Sources */,
+				A1000000000000000000000A /* OCRProcessor.swift in Sources */,
 				A10000000000000000000008 /* PreviewView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -206,6 +213,7 @@
 				A10000000000000000000003 /* NativeScannerTests.swift in Sources */,
 				A10000000000000000000004 /* CaptureConfigurationTests.swift in Sources */,
 				A10000000000000000000006 /* DocumentProcessorTests.swift in Sources */,
+				A10000000000000000000009 /* OCRProcessorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -83,15 +83,15 @@
 
 **Acceptance criteria:**
 
-- [ ] 只使用运行时支持的 `zh-Hans`、`en-US`，以 `.accurate` 和语言修正执行 OCR；没有可用语言或图片无法解码时返回简体中文错误。
-- [ ] Vision 文字框转换为左上角像素坐标并按 `y`、`x` 稳定排序；每条结果保留最高候选文字和置信度。
-- [ ] TXT 与 JSON v1 的文本和顺序一致；空结果生成空 TXT 和有效 JSON，合成 `TEST 123` 图片产生非空结果。
+- [x] 只使用运行时支持的 `zh-Hans`、`en-US`，以 `.accurate` 和语言修正执行 OCR；没有可用语言或图片无法解码时返回简体中文错误。
+- [x] Vision 文字框转换为左上角像素坐标并按 `y`、`x` 稳定排序；每条结果保留最高候选文字和置信度。
+- [x] TXT 与 JSON v1 的文本和顺序一致；空结果生成空 TXT 和有效 JSON，合成 `TEST 123` 图片产生非空结果。
 
 **Verification:**
 
-- [ ] Tests pass:
+- [x] Tests pass:
   `xcodebuild -project NativeScanner/NativeScanner.xcodeproj -scheme NativeScanner -configuration Debug -destination 'platform=macOS' -derivedDataPath NativeScanner/build test -only-testing:NativeScannerTests/OCRProcessorTests`
-- [ ] Build succeeds:
+- [x] Build succeeds:
   `xcodebuild -project NativeScanner/NativeScanner.xcodeproj -scheme NativeScanner -configuration Debug -destination 'platform=macOS' -derivedDataPath NativeScanner/build build`
 
 **Dependencies:** 已完成的 Task 4 和 Task 6 输出契约；不依赖未完成的 Task 8。
@@ -106,9 +106,9 @@
 
 ## Checkpoint O1：纯 OCR 核心
 
-- [ ] `OCRProcessorTests` 全部通过，应用构建成功。
-- [ ] 未修改相机、预览、文档检测和增强参数。
-- [ ] 人工检查 JSON 样例与规格中的 v1 字段完全一致。
+- [x] `OCRProcessorTests` 全部通过，应用构建成功。
+- [x] 未修改相机、预览、文档检测和增强参数。
+- [x] 人工检查 JSON 样例与规格中的 v1 字段完全一致。
 
 ## Task 10：接入扫描保存与失败隔离
 
