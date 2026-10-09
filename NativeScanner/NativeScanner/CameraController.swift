@@ -120,7 +120,7 @@ final class CameraController: NSObject, ObservableObject, @unchecked Sendable {
             publishFailure(ScannerError.processingInProgress)
             return
         }
-        publish(status: "正在选择最清晰画面并增强…", processing: true)
+        publish(status: "正在选择最清晰画面、透视裁边、增强并识别文字…", processing: true)
 
         analysisQueue.async { [weak self] in
             guard let self else { return }
@@ -240,14 +240,14 @@ final class CameraController: NSObject, ObservableObject, @unchecked Sendable {
                     ? "未识别到文字"
                     : "OCR 识别 \(export.document.observations.count) 条"
                 publish(
-                    status: "扫描完成：\(document.width)×\(document.height)，\(ocrStatus)，已保存到 \(directory.path)",
+                    status: "扫描完成：源帧 \(candidate.image.width)×\(candidate.image.height)，裁边后 \(document.width)×\(document.height)，\(ocrStatus)，已保存到 \(directory.path)",
                     processing: false
                 )
             } catch {
                 let message = (error as? LocalizedError)?.errorDescription
                     ?? error.localizedDescription
                 publish(
-                    status: "图像已保存：\(document.width)×\(document.height)，但 OCR 失败：\(message)",
+                    status: "图像已保存：源帧 \(candidate.image.width)×\(candidate.image.height)，裁边后 \(document.width)×\(document.height)，但 OCR 失败：\(message)",
                     processing: false
                 )
             }
