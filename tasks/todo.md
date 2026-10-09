@@ -32,15 +32,15 @@
 
 **Acceptance criteria:**
 
-- [ ] 工程可使用当前 Xcode 和本机签名构建、启动。
-- [ ] 相机用途说明与沙箱 entitlement 可在构建产物中核验。
-- [ ] `NSCameraUseContinuityCameraDeviceType` 已依据 SDK 声明或构建结果确认，而非猜测。
+- [x] 工程可使用当前 Xcode 和本机签名构建、启动。
+- [x] 相机用途说明与沙箱 entitlement 可在构建产物中核验。
+- [x] `NSCameraUseContinuityCameraDeviceType` 已依据 SDK 声明或构建结果确认，而非猜测。
 
 **Verification:**
 
-- [ ] Debug 构建成功。
-- [ ] 应用启动且不立即崩溃。
-- [ ] 使用 `codesign` / `plutil` 检查签名、entitlement 和 Info.plist。
+- [x] Debug 构建成功。
+- [x] 应用启动且不立即崩溃。
+- [x] 使用 `codesign` / `plutil` 检查签名、entitlement 和 Info.plist。
 
 **Dependencies:** Task 1
 
