@@ -66,7 +66,7 @@
 - [ ] 小字、铅笔字、图表的增强结果经用户样张确认。
 - [x] Swift 构建、XCTest 和 Python 测试全部通过。
 - [x] README、限制和真机验证记录准确。
-- [ ] Git 不含扫描件、设备标识、签名资料或构建产物。
+- [x] Git 不含扫描件、设备标识、签名资料或构建产物。
 
 **Verify:** 完整构建/测试、真机清单、Git 暂存检查。
 
@@ -150,18 +150,18 @@
 
 **Acceptance criteria:**
 
-- [ ] README 和 CHANGELOG 准确说明五份输出、本地处理、JSON 坐标、阅读顺序限制和隐私风险。
+- [x] README 和 CHANGELOG 准确说明五份输出、本地处理、JSON 坐标、阅读顺序限制和隐私风险。
 - [ ] 真实中英混排试卷的 TXT 可读、JSON 可解析；明显错字、铅笔字和多栏顺序限制记录在验证文档中，不虚报准确率。
 - [ ] 连续扫描 20 次无崩溃、覆盖或明显持续内存增长，Git 不包含扫描件、设备信息、签名资料和构建产物。
 
 **Verification:**
 
-- [ ] Swift tests pass:
+- [x] Swift tests pass:
   `xcodebuild -project NativeScanner/NativeScanner.xcodeproj -scheme NativeScanner -configuration Debug -destination 'platform=macOS' -derivedDataPath NativeScanner/build test`
-- [ ] Python regression passes:
+- [x] Python regression passes:
   `.venv/bin/python -m unittest -v`
 - [ ] Manual check: Finder 打开三份 PNG，文本编辑器打开 TXT，`python3 -m json.tool <输出文件.json>` 验证 JSON，并完成 20 次真机扫描清单。
-- [ ] Repository check: `git status --short --ignored` 不出现未忽略的扫描件、签名资料或构建产物。
+- [x] Repository check: `git status --short --ignored` 不出现未忽略的扫描件、签名资料或构建产物。
 
 **Dependencies:** Task 10；与原 Task 8 合并验收。
 
@@ -176,6 +176,6 @@
 ## Checkpoint O3：`ocr-export` 完成
 
 - [ ] Task 9–11 的验收项全部完成。
-- [ ] Swift 构建、XCTest 和 Python 回归全部通过。
+- [x] Swift 构建、XCTest 和 Python 回归全部通过。
 - [ ] 真实中文样张已由用户复核，原始 PNG 仍是事实来源。
-- [ ] `ocr-export` 可以独立回退，不影响既有三 PNG 扫描流程。
+- [x] `ocr-export` 可以独立回退，不影响既有三 PNG 扫描流程。

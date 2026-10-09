@@ -1,6 +1,6 @@
 # Mac / iPhone 高拍仪
 
-当前开发版是 macOS 原生单端 App：通过连续互通相机读取 iPhone 1920×1080 实时画面，用 Vision 追踪文档，在 Mac 上选择近期最清晰帧，完成透视校正和本地增强。
+当前开发版是 macOS 原生单端 App：通过连续互通相机读取 iPhone 1920×1080 实时画面，用 Vision 追踪文档，在 Mac 上选择近期最清晰帧，完成透视校正、本地增强和离线文字识别。
 
 Python/OpenCV 版仍保留，已归档为 `v1.0.0`。
 
@@ -10,8 +10,22 @@ Python/OpenCV 版仍保留，已归档为 `v1.0.0`。
 
 - 只连接 iPhone 连续互通相机，不回退到 Mac 内置摄像头。
 - 实时显示文档绿框，分析最多 5 FPS，缓存最近 8 个合格候选帧。
-- 每次扫描保存三份无损 PNG：`_original`（仅校正）、`_color`（彩色增强）、`_gray`（灰度增强）。
+- 每次扫描先保存三份无损 PNG：`_original`（仅校正）、`_color`（彩色增强）、`_gray`（灰度增强）。
+- PNG 保存成功后，使用 Apple Vision 在 Mac 本地识别简体中文和英文，并输出 `_ocr.txt` 与 `_ocr.json`。
+- OCR 失败不会删除三份 PNG；应用会提示“图像已保存，但 OCR 失败”。
 - 不插值放大，不声称 4K 或 iPhone 相机 App 原生照片画质。
+
+### 一次扫描的输出
+
+```text
+scan_yyyyMMdd_HHmmss_SSSSSS_original.png
+scan_yyyyMMdd_HHmmss_SSSSSS_color.png
+scan_yyyyMMdd_HHmmss_SSSSSS_gray.png
+scan_yyyyMMdd_HHmmss_SSSSSS_ocr.txt
+scan_yyyyMMdd_HHmmss_SSSSSS_ocr.json
+```
+
+TXT 是按文字框位置从上到下、同高度从左到右排列的 UTF-8 文本。JSON 保留源图尺寸、实际识别语言、每条文字的置信度和左上角像素坐标；它适合复核和后续工具处理。当前排序不保证正确还原多栏、表格或竖排版面，OCR 也可能产生高置信度错字，原始校正 PNG 始终是事实来源。
 
 ### 构建与运行
 
@@ -19,7 +33,7 @@ Python/OpenCV 版仍保留，已归档为 `v1.0.0`。
 2. 用 Xcode 打开 `NativeScanner/NativeScanner.xcodeproj`。
 3. 选择 `NativeScanner` scheme 和“My Mac”，按 `Command-R`。
 4. 允许相机权限，让纸张四个角都进入画面，等待绿框稳定。
-5. 选择保存目录，点击“扫描”，或按 `S` / 空格。
+5. 选择保存目录，点击“扫描”，或按 `S` / 空格；等待状态栏显示 OCR 条目数量或失败原因。
 
 命令行自检：
 
@@ -74,4 +88,6 @@ python -m unittest -v
 
 ## 隐私与归档
 
-`scanned_docs/`、`.venv/`、`NativeScanner/build/` 和 macOS 临时文件已被 Git 忽略。原生版只写入用户当次选择的本地目录；推送前仍应使用 `git status` 检查暂存内容，避免试卷或其他个人文档泄露。
+`scanned_docs/`、`.venv/`、`NativeScanner/build/` 和 macOS 临时文件已被 Git 忽略。原生版的图像和 OCR 均只写入用户当次选择的本地目录，不使用网络服务。
+
+TXT/JSON 比图片更容易被系统搜索和复制。请不要把输出目录放在会自动同步或提交 Git 的位置；推送前仍应使用 `git status` 检查暂存内容，避免试卷、识别文字或其他个人文档泄露。
