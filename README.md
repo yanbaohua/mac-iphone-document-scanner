@@ -50,6 +50,16 @@ xcodebuild -project NativeScanner/NativeScanner.xcodeproj \
 
 原生版的实测记录见 [`docs/native-validation.md`](docs/native-validation.md)。
 
+### 本机安装与日常启动
+
+本机 Release 版安装在 `/Applications/NativeScanner.app`。日常使用不需要打开终端或 Xcode，可以采用任一方式启动：
+
+- 打开 Finder →“应用程序”→ 双击 `NativeScanner`。
+- 按 `Command-Space` 打开聚焦搜索，输入 `NativeScanner` 后回车。
+- App 运行时在 Dock 图标上右键，选择“选项 → 在程序坞中保留”。
+
+更新程序时，需要先退出正在运行的 `NativeScanner`，重新构建 Release 版，再替换 `/Applications/NativeScanner.app`。扫描输出目录不会随应用更新而删除。
+
 ## Python/OpenCV 归档版
 
 ### 准备
