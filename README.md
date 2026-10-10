@@ -1,10 +1,12 @@
 # Mac / iPhone 高拍仪
 
-当前开发版是 macOS 原生单端 App：通过连续互通相机读取 iPhone 1920×1080 实时画面，用 Vision 追踪文档，在 Mac 上选择近期最清晰帧，完成透视校正、本地增强和离线文字识别。
+当前主线是 macOS 原生单端 App：通过连续互通相机读取 iPhone 1920×1080 实时画面，用 Vision 追踪文档，在 Mac 上选择近期最清晰帧，完成透视校正、本地增强和离线文字识别。扫描图片和 OCR 结果始终保存在用户选择的本地目录。
 
 Python/OpenCV 版仍保留，已归档为 `v1.0.0`。
 
-## 原生版（当前开发）
+## 原生版（当前主线）
+
+已验证环境：Apple silicon Mac、macOS 15、Xcode 26.3、iPhone 16 Pro。工程最低部署目标为 macOS 15.0；其他硬件和系统组合尚未完整验证。
 
 ### 功能边界
 
@@ -31,11 +33,12 @@ TXT 是按文字框位置从上到下、同高度从左到右排列的 UTF-8 文
 
 ### 构建与运行
 
-1. Mac 与 iPhone 登录同一 Apple 账户，开启 Wi-Fi、蓝牙和 iPhone 的“连续互通相机”。
-2. 用 Xcode 打开 `NativeScanner/NativeScanner.xcodeproj`。
-3. 选择 `NativeScanner` scheme 和“My Mac”，按 `Command-R`。
-4. 允许相机权限，让纸张四个角都进入画面，等待绿框稳定。
-5. 选择保存目录，点击“扫描”，或按 `S` / 空格；等待状态栏显示 OCR 条目数量或失败原因。
+1. 克隆仓库：`git clone https://github.com/yanbaohua/mac-iphone-document-scanner.git`。
+2. Mac 与 iPhone 登录同一 Apple 账户，开启 Wi-Fi、蓝牙和 iPhone 的“连续互通相机”。
+3. 用 Xcode 打开 `NativeScanner/NativeScanner.xcodeproj`。
+4. 选择 `NativeScanner` scheme 和“My Mac”，按 `Command-R`。本机调试不需要付费 Apple Developer Program 会员。
+5. 允许相机权限，让纸张四个角都进入画面，等待绿框稳定。
+6. 选择保存目录，点击“扫描”，或按 `S` / 空格；等待状态栏显示 OCR 条目数量或失败原因。
 
 重新构建后应先退出仍在运行的旧 App，再按 `Command-R` 或重新打开构建产物。若状态栏只显示尺寸而没有“OCR 识别 N 条”“未识别到文字”或“OCR 失败”，说明运行的仍是 OCR 更新前的旧进程。
 
@@ -52,7 +55,20 @@ xcodebuild -project NativeScanner/NativeScanner.xcodeproj \
 
 ### 本机安装与日常启动
 
-本机 Release 版安装在 `/Applications/NativeScanner.app`。日常使用不需要打开终端或 Xcode，可以采用任一方式启动：
+构建并安装 Release 版：
+
+```bash
+xcodebuild -project NativeScanner/NativeScanner.xcodeproj \
+  -scheme NativeScanner \
+  -configuration Release \
+  -destination 'platform=macOS' \
+  -derivedDataPath NativeScanner/build build
+
+ditto NativeScanner/build/Build/Products/Release/NativeScanner.app \
+  /Applications/NativeScanner.app
+```
+
+安装后不需要打开终端或 Xcode，可以采用任一方式启动：
 
 - 打开 Finder →“应用程序”→ 双击 `NativeScanner`。
 - 按 `Command-Space` 打开聚焦搜索，输入 `NativeScanner` 后回车。
@@ -105,3 +121,7 @@ python -m unittest -v
 `scanned_docs/`、`.venv/`、`NativeScanner/build/` 和 macOS 临时文件已被 Git 忽略。原生版的图像和 OCR 均只写入用户当次选择的本地目录，不使用网络服务。
 
 TXT/JSON 比图片更容易被系统搜索和复制。请不要把输出目录放在会自动同步或提交 Git 的位置；推送前仍应使用 `git status` 检查暂存内容，避免试卷、识别文字或其他个人文档泄露。
+
+## 开源许可
+
+本项目采用 [MIT License](LICENSE)。你可以使用、修改和分发代码，但必须保留版权及许可声明。Apple、macOS、iPhone、Xcode 和 Continuity Camera 是 Apple Inc. 的商标或产品名称，本项目与 Apple Inc. 无隶属或背书关系。
